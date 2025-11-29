@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+body{
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px;
+    @apply bg-gray-100;
+}
