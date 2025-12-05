@@ -2,12 +2,13 @@
 import { ref } from 'vue';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
-import 'primeicons/primeicons.css'
 
 const formData = ref({
     email: '',
     password: ''
 })
+
+const emits =defineEmits(['resetPassword'])
 </script>
 
 <template>
@@ -18,7 +19,7 @@ const formData = ref({
         <div class="mb-3">
             <InputText name="password" placeholder="Введите пароль" type="password" v-model="formData.password" class="w-full" />
         </div>
-        <span class="cursor-pointer mb-3 block">
+        <span class="cursor-pointer mb-3 block" @click="emits('resetPassword')">
             Забыли пароль?
         </span>
         <div class="grid grid-cols-2 gap-3">
