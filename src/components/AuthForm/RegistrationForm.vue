@@ -33,6 +33,7 @@ const submitForm = async ({ valid }) => {
     await signUp({
       email: formData.value.email,
       password: formData.value.password,
+      firstname: formData.value.firstname,
     })
   } catch {
     showToast('error', 'Ошибка регистрации', errorMessage.value)

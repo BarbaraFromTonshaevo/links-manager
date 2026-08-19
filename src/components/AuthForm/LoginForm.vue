@@ -6,6 +6,12 @@ import { z } from 'zod';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Message from 'primevue/message';
+import Toast from 'primevue/toast'
+import { useToastNotifications } from '@/composables/useToastNotifications'
+import { useAuth } from '@/composables/useAuth'
+
+const { showToast } = useToastNotifications()
+const { signIn, loading, errorMessage } = useAuth()
 
 const formData = ref({
     email: '',
@@ -22,11 +28,20 @@ const rules = z.object({
 const resolver = ref(zodResolver(rules))
 
 const submitForm = async ({ valid }) => {
-    console.log(valid)
+  if (!valid) return
+  try {
+    await signIn({
+      email: formData.value.email,
+      password: formData.value.password,
+    })
+  } catch {
+    showToast('error', 'Ошибка входа', errorMessage.value)
+  }
 }
 </script>
 
 <template>
+    <Toast />
     <Form v-slot="$form" :initial-values="formData" :resolver="resolver" :validate-on-blur="true"
         :validate-on-value-update="false" @submit="submitForm">
         <div class="mb-3">
@@ -46,7 +61,7 @@ const submitForm = async ({ valid }) => {
             Забыли пароль?
         </span>
         <div class="grid grid-cols-2 gap-3">
-            <Button type="submit" class="w-full" label="Вход"></Button>
+            <Button type="submit" class="w-full" label="Вход" :loading="loading"></Button>
             <Button type="submit" icon="pi pi-github" class="w-full" label="GitHub" severity="contrast"></Button>
         </div>
     </Form>
