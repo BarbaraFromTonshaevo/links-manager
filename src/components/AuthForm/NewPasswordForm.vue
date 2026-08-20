@@ -1,4 +1,5 @@
 <script setup>
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Form } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
@@ -11,23 +12,22 @@ import { useToastNotifications } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
 
 const { showToast } = useToastNotifications()
-const { resetPassword, loading, errorMessage } = useAuth()
+const { updatePassword, loading, errorMessage } = useAuth()
+const router = useRouter()
 
-const email = ref('')
-
+const password = ref('')
 const rules = z.object({
-  email: z.string().email({ message: 'Некорректный email' }),
+  password: z.string().min(6, { message: 'Должно быть минимум 6 символов' }),
 })
-
 const resolver = ref(zodResolver(rules))
 
 const submitForm = async ({ valid }) => {
   if (!valid) return
   try {
-    await resetPassword(email.value)
-    showToast('success', 'Успешно', 'Ссылка на сброс пароля уже на вашей почте')
+    await updatePassword(password.value)
+    router.replace('/auth')
   } catch {
-    showToast('error', 'Ошибка регистрации', errorMessage.value)
+    showToast('error', 'Ошибка при создании нового пароля', errorMessage.value)
   }
 }
 </script>
@@ -36,7 +36,7 @@ const submitForm = async ({ valid }) => {
   <Toast />
   <Form
     v-slot="$form"
-    :initial-values="{ email }"
+    :initial-values="{ password }"
     :resolver="resolver"
     :validate-on-blur="true"
     :validate-on-value-update="false"
@@ -44,18 +44,16 @@ const submitForm = async ({ valid }) => {
   >
     <div class="mb-3">
       <InputText
-        name="email"
-        placeholder="Введите email"
-        type="text"
-        v-model="email"
+        name="password"
+        placeholder="Введите пароль"
+        type="password"
+        v-model="password"
         class="w-full"
       />
-      <Message v-if="$form.email?.invalid" severity="error" variant="simple" size="small">
-        {{ $form.email.error.message }}
+      <Message v-if="$form.password?.invalid" severity="error" variant="simple" size="small">
+        {{ $form.password.error.message }}
       </Message>
     </div>
-    <div class="grid">
-      <Button type="submit" class="w-full" label="Сброс пароля" :loading="loading"></Button>
-    </div>
+    <Button type="submit" class="w-full" label="Задать новый пароль" :loading="loading"></Button>
   </Form>
 </template>

@@ -11,7 +11,7 @@ import { useToastNotifications } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
 
 const { showToast } = useToastNotifications()
-const { signUp, loading, errorMessage } = useAuth()
+const { signUp, signInWithGithub, loading, errorMessage } = useAuth()
 
 const formData = ref({
   email: '',
@@ -90,11 +90,11 @@ const submitForm = async ({ valid }) => {
     <div class="grid grid-cols-2 gap-3">
       <Button type="submit" class="w-full" label="Регистрация" :loading="loading"></Button>
       <Button
-        type="submit"
         icon="pi pi-github"
         class="w-full"
         label="GitHub"
         severity="contrast"
+        @click="signInWithGithub"
       ></Button>
     </div>
   </Form>
