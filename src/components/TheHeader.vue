@@ -1,7 +1,15 @@
 <script setup>
+import { computed } from 'vue';
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Menubar from 'primevue/menubar'
+import { useUserStore } from '@/stores/userStore';
+
+const authStore = useUserStore()
+
+const emailFirstLetter = computed(() => {
+    return authStore.user?.email ? authStore.user.email[0].toUpperCase() : ''
+})
 </script>
 
 <template>
@@ -18,7 +26,7 @@ import Menubar from 'primevue/menubar'
       </template>
       <template #end>
         <div class="flex items-center gap-2">
-          <Avatar label="A" size="large" shape="circle" />
+          <Avatar :label="emailFirstLetter" size="large" shape="circle" />
           <Button icon="pi pi-sign-out" rounded severity="secondary" />
         </div>
       </template>
