@@ -8,9 +8,7 @@ export function useAuth() {
     return await handleRequest(async () => {
       const { data, error } = await supabase.auth.signUp({ email, password })
       await supabase.from('users').insert({ id: data.user.id, firstname, email })
-      if (error) {
-        throw error
-      }
+      if (error) throw error
       return data
     })
   }
@@ -18,9 +16,7 @@ export function useAuth() {
   const signIn = async ({ email, password }) => {
     return await handleRequest(async () => {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        throw error
-      }
+      if (error) throw error
       return data
     })
   }
@@ -30,9 +26,7 @@ export function useAuth() {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: 'http://localhost:5173/reset-password',
       })
-      if (error) {
-        throw error
-      }
+      if (error) throw error
       return data
     })
   }
@@ -40,22 +34,35 @@ export function useAuth() {
   const updatePassword = async (password) => {
     return await handleRequest(async () => {
       const { data, error } = await supabase.auth.updateUser({ password })
-      if (error) {
-        throw error
-      }
+      if (error) throw error
       return data
     })
   }
 
-    const signInWithGithub = async () => {
+  const signInWithGithub = async () => {
     return await handleRequest(async () => {
       const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
-      if (error) {
-        throw error
-      }
+      if (error) throw error
       return data
     })
   }
 
-  return { loading, errorMessage, signUp, signIn, resetPassword, updatePassword, signInWithGithub }
+  const signOut = async () => {
+    return await handleRequest(async () => {
+      const { data, error } = await supabase.auth.signOut()
+      if (error) throw error
+      return data
+    })
+  }
+
+  return {
+    loading,
+    errorMessage,
+    signUp,
+    signIn,
+    resetPassword,
+    updatePassword,
+    signInWithGithub,
+    signOut,
+  }
 }
