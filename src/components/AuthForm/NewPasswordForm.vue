@@ -2,12 +2,9 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Form } from '@primevue/forms'
+import {Button, InputText, Message, Toast } from 'primevue'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Message from 'primevue/message'
-import Toast from 'primevue/toast'
 import { useToastNotifications } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
 

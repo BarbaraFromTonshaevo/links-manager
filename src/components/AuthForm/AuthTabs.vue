@@ -1,10 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import Tabs from 'primevue/tabs';
-import TabList from 'primevue/tablist';
-import Tab from 'primevue/tab';
-import TabPanels from 'primevue/tabpanels';
-import TabPanel from 'primevue/tabpanel';
+import {Tabs,TabList, Tab, TabPanels, TabPanel  } from 'primevue';
 import LoginForm from './LoginForm.vue';
 import RegistrationForm from './RegistrationForm.vue';
 import ResetPasswordForm from './ResetPasswordForm.vue';
