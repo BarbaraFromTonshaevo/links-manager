@@ -1,12 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { supabase } from '@/supabase'
-import Dialog from 'primevue/dialog'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
+import { Dialog, InputText, Button, Skeleton, Toast } from 'primevue'
 import { Form } from '@primevue/forms'
-import Skeleton from 'primevue/skeleton'
-import { Toast } from 'primevue'
 import { useToastNotifications } from '@/composables/useToastNotifications'
 
 const modelValue = defineModel()
@@ -68,7 +64,7 @@ watch(modelValue, async (newVal) => {
 
 <template>
   <Toast />
-  <Dialog header="Категории" v-model:visible="modelValue" :style="{ width: '25rem' }">
+  <Dialog modal header="Категории" v-model:visible="modelValue" :style="{ width: '25rem' }">
     <template v-if="isLoadingModal">
       <div class="grid mt-3 grid-cols-[1fr_32px] mb-1 items-center gap-5">
         <Skeleton width="100%" />
