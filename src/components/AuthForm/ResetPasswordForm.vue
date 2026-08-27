@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { Form } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
-import { Button, InputText, Message, Toast } from 'primevue'
+import { Button, InputText, Message } from 'primevue'
 import { useToastNotifications } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
 
@@ -30,7 +30,6 @@ const submitForm = async ({ valid }) => {
 </script>
 
 <template>
-  <Toast />
   <Form
     v-slot="$form"
     :initial-values="{ email }"

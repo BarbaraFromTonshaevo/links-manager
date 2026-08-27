@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Button, InputText, Message, Toast } from 'primevue'
+import { Button, InputText, Message } from 'primevue'
 import { Form } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
@@ -44,7 +44,6 @@ const submitForm = async ({ valid }) => {
 </script>
 
 <template>
-  <Toast />
   <Form
     v-slot="$form"
     :initial-values="formData"

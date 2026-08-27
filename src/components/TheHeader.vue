@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { Button, Avatar, Menubar, Toast } from 'primevue'
+import { Button, Avatar, Menubar } from 'primevue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useAuth } from '@/composables/useAuth'
@@ -33,7 +33,6 @@ const signOutUser = async () => {
 <template>
   <CategoriesModal v-model="categoriesDialogVisible" />
   <CreateLinkModal v-model="createLinkDialogVisible" />
-  <Toast />
   <div class="mb-5">
     <Menubar>
       <template #start>
