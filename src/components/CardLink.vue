@@ -3,9 +3,11 @@ import { ref, computed } from 'vue'
 import { Card, SpeedDial } from 'primevue'
 import { useLinksStore } from '@/stores/linksStore'
 import { useToastNotifications } from '@/composables/useToastNotifications'
+import CreateLinkModal from '@/components/Modals/CreateLinkModal.vue'
 
 const linksStore = useLinksStore()
 const { showToast } = useToastNotifications()
+const createLinkDialogVisible = ref(false)
 
 const itemsMenuButton = ref([
   {
@@ -31,7 +33,7 @@ const itemsMenuButton = ref([
     label: 'Редактировать',
     icon: 'pi pi-pencil',
     command: () => {
-      console.log('edit link')
+      createLinkDialogVisible.value = true
     },
   },
   {
@@ -55,6 +57,8 @@ const props = defineProps({
   },
 })
 
+
+
 const isFavoriteBgCard = computed(() => {
   return props.link.is_favorite ? 'var(--p-button-outlined-warn-hover-background' : ''
 })
@@ -69,11 +73,12 @@ const copyToClipboard = async () => {
 }
 
 const openLink = () => {
-    linksStore.addClickCount(props.link.id)
+  linksStore.addClickCount(props.link.id)
 }
 </script>
 
 <template>
+  <CreateLinkModal v-model="createLinkDialogVisible" isEdit :id="link.id" />
   <Card class="relative" :style="{ 'background-color': isFavoriteBgCard }">
     <template #title>
       <div class="flex items-center gap-2">
