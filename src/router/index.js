@@ -2,8 +2,6 @@ import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { supabase } from '@/supabase.js'
 
-let user = null
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,21 +24,19 @@ const router = createRouter({
   ],
 })
 
-const getUser = async (next) => {
-  user = await supabase.auth.getSession()
-  if (user.data.session === null || user === null) {
-    next({ name: 'auth' })
-  } else {
-    next()
-  }
-}
-
 router.beforeEach(async (to, from, next) => {
-  if (to.meta.requiresAuth) {
-    await getUser(next)
-  } else {
-    next()
+  const { data } = await supabase.auth.getSession()
+  const session = data.session
+
+  if (to.meta.requiresAuth && !session) {
+    return next({ name: 'auth' })
   }
+
+  if (!to.meta.requiresAuth && session) {
+    return next({ name: 'home' })
+  }
+
+  next()
 })
 
 export default router
