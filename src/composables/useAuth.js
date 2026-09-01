@@ -7,8 +7,8 @@ export function useAuth() {
   const signUp = async ({ email, password, firstname }) => {
     return await handleRequest(async () => {
       const { data, error } = await supabase.auth.signUp({ email, password })
-      await supabase.from('users').insert({ id: data.user.id, firstname, email })
       if (error) throw error
+      await supabase.from('users').insert({ id: data.user.id, firstname, email })
       return data
     })
   }

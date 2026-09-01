@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { supabase } from '@/supabase'
-import { Dialog, InputText, Button, Skeleton, Toast } from 'primevue'
+import { Dialog, InputText, Button, Skeleton } from 'primevue'
 import { Form } from '@primevue/forms'
 import { useToastNotifications } from '@/composables/useToastNotifications'
 
@@ -81,7 +81,7 @@ watch(modelValue, async (newVal) => {
           />
         </div>
         <div class="flex justify-end gap-2 mt-4">
-          <Button type="button" label="Добавить" :loading="isLoading" @click="saveCategory" />
+          <Button :disabled="categoryName.trim().length < 3" type="button" label="Добавить" :loading="isLoading" @click="saveCategory" />
         </div>
         <div
           class="grid mt-3 grid-cols-[1fr_32px] mb-1 gap-5"
