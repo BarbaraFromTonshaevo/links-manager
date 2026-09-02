@@ -118,8 +118,7 @@ const addNewLink = async () => {
     clear()
     showToast('success', 'Успех', 'Ссылка добавлена')
   } catch (error) {
-    showToast('error', 'Ошибка', error)
-    console.log(error)
+    showToast('error', 'Ошибка', error.message)
   } finally {
     isLoadingButton.value = false
   }
