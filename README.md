@@ -1,47 +1,117 @@
-# links-manager
+# 🔗 Link Manager
 
-This template should help get you started developing with Vue 3 in Vite.
+A small SPA for saving, organizing and revisiting your favorite links — with categories, favorites and click-popularity tracking. Built while studying a Stepik course on Vue 3 + Supabase, then extended as a portfolio piece.
 
-## Recommended IDE Setup
+**Live demo:** https://links-manager-mauve.vercel.app/
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+> Sign up with any email or use the "GitHub" button to sign in with OAuth.
 
-## Recommended Browser Setup
+## Features
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Authentication** — email/password sign up & sign in, GitHub OAuth, "forgot password" flow with email reset, all backed by Supabase Auth
+- **Protected routes** — Vue Router navigation guards redirect unauthenticated users to `/auth` and keep authenticated users out of it
+- **Link CRUD** — add, edit and delete links with a name, URL, description and category; a favicon preview is fetched automatically from the link's domain
+- **Categories** — create and delete custom categories to group links
+- **Favorites & popularity** — mark links as favorite, and every click through a link is counted so you can sort by "most opened"
+- **Filtering & pagination** — filter by favorites only / sort by popularity, with "load more" pagination on top of Supabase's range queries
+- **Form validation** — schema-based validation with Zod through `@primevue/forms`
+- **Toast feedback** — success/error notifications for every action
 
-## Customize configuration
+## Tech stack
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+| Layer       | Choice                                                            |
+| ----------- | ------------------------------------------------------------------ |
+| Framework   | [Vue 3](https://vuejs.org/) (`<script setup>`, Composition API)    |
+| Build tool  | [Vite](https://vite.dev/)                                          |
+| State       | [Pinia](https://pinia.vuejs.org/)                                  |
+| Routing     | [Vue Router 4](https://router.vuejs.org/)                          |
+| UI kit      | [PrimeVue 4](https://primevue.org/) + [Tailwind CSS 4](https://tailwindcss.com/) (`tailwindcss-primeui`) |
+| Validation  | [Zod](https://zod.dev/) via `@primevue/forms`                      |
+| Backend     | [Supabase](https://supabase.com/) (Postgres, Auth, Row Level Security) |
+| Deployment  | [Vercel](https://vercel.com/)                                      |
 
-## Project Setup
+## Project structure
+
+```
+src/
+├── components/
+│   ├── AuthForm/        # login / registration / password reset forms
+│   ├── Modals/          # create/edit link & category dialogs
+│   ├── CardLink.vue     # single link card (favorite, copy, edit, delete)
+│   ├── TheFilters.vue   # favorites / popularity filters
+│   └── TheHeader.vue    # top navbar
+├── composables/
+│   ├── useAuth.js             # sign up / in / out, password reset, GitHub OAuth
+│   ├── useRequest.js          # shared loading/error state for async calls
+│   └── useToastNotifications.js
+├── stores/
+│   ├── linksStore.js    # links list, pagination, filters
+│   └── userStore.js     # current authenticated user
+├── router/               # route definitions + auth guard
+└── supabase.js           # Supabase client instance
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js `^20.19.0` or `>=22.12.0`
+- A [Supabase](https://supabase.com/) project
+
+### 1. Clone & install
 
 ```sh
+git clone https://github.com/<your-username>/links-manager.git
+cd links-manager
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 2. Configure environment variables
+
+Copy `.env.example` to `.env` and fill in your Supabase anon key:
 
 ```sh
-npm run dev
+cp .env.example .env
 ```
 
-### Compile and Minify for Production
+```
+VITE_SUPABASE_KEY=your-supabase-anon-key
+```
+
+The Supabase project URL is currently hardcoded in [`src/supabase.js`](src/supabase.js) — replace it with your own project's URL if you're running against a different backend.
+
+### 3. Set up the database
+
+Create the following tables in your Supabase project (SQL editor or table editor), and enable **Row Level Security** on each one so users can only read/write their own data:
+
+- **`users`** — `id` (uuid, references `auth.users`), `firstname`, `email`
+- **`categories`** — `id`, `name`
+- **`links`** — `id`, `name`, `url`, `description`, `category` (references `categories.id`), `is_favorite`, `click_count`, `preview_image`, `user_id` (references `auth.users`), `created_at`
+
+For GitHub OAuth and password-reset emails to work, configure the provider and redirect URLs under **Authentication → URL Configuration** in the Supabase dashboard.
+
+### 4. Run the app
 
 ```sh
-npm run build
+npm run dev       # start the dev server
+npm run build     # production build
+npm run preview   # preview the production build locally
+npm run lint       # lint & auto-fix
+npm run format     # format with Prettier
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## Possible improvements
 
-```sh
-npm run lint
-```
-"# links-manager" 
+Ideas for taking this further:
 
-19082026links-manager
+- [ ] Use the current origin (`window.location.origin`) instead of a hardcoded `localhost` URL for the password-reset redirect, so it works in production
+- [ ] Search links by name, and filter by category (not just favorites)
+- [ ] Cover `useAuth` and the Pinia stores with unit tests (Vitest)
+- [ ] Add a GitHub Actions workflow to run lint/build on every PR
+- [ ] React to `supabase.auth.onAuthStateChange` instead of re-checking the session on every navigation, so login state stays in sync across tabs
+- [ ] Dark mode toggle (PrimeVue + Tailwind already support it)
+- [ ] Migrate to TypeScript
+
+## License
+
+This is a personal learning/portfolio project, based on a Stepik course, without a specified license.
