@@ -1,6 +1,6 @@
 import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { supabase } from '@/supabase.js'
+import { useUserStore } from '@/stores/userStore.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,14 +25,12 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const { data } = await supabase.auth.getSession()
-  const session = data.session
-
-  if (to.meta.requiresAuth && !session) {
+  await useUserStore().authReady
+  if (to.meta.requiresAuth && !useUserStore().user) {
     return next({ name: 'auth' })
   }
 
-  if (!to.meta.requiresAuth && session) {
+  if (!to.meta.requiresAuth && useUserStore().user) {
     return next({ name: 'home' })
   }
 

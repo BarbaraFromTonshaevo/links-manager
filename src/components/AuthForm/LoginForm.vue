@@ -7,9 +7,7 @@ import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { z } from 'zod'
 import { useToastNotifications } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
-import { useUserStore } from '@/stores/userStore'
 
-const authStore = useUserStore()
 const router = useRouter()
 const { showToast } = useToastNotifications()
 const { signIn, signInWithGithub, loading, errorMessage } = useAuth()
@@ -35,7 +33,6 @@ const submitForm = async ({ valid }) => {
       email: formData.value.email,
       password: formData.value.password,
     })
-    await authStore.getUser()
     await router.replace({ name: 'home' })
   } catch {
     showToast('error', 'Ошибка входа', errorMessage.value)

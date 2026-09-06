@@ -22,7 +22,6 @@ const emailFirstLetter = computed(() => {
 const signOutUser = async () => {
   try {
     await signOut()
-    authStore.resetUser()
     await router.replace({ name: 'auth' })
   } catch {
     showToast('error', 'Ошибка выхода', errorMessage.value)

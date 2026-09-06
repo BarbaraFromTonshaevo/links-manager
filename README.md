@@ -68,17 +68,16 @@ npm install
 
 ### 2. Configure environment variables
 
-Copy `.env.example` to `.env` and fill in your Supabase anon key:
+Copy `.env.example` to `.env` and fill in your Supabase project URL and anon key (**Project Settings → API**):
 
 ```sh
 cp .env.example .env
 ```
 
 ```
+VITE_SUPABASE_URL=your-supabase-project-url
 VITE_SUPABASE_KEY=your-supabase-anon-key
 ```
-
-The Supabase project URL is currently hardcoded in [`src/supabase.js`](src/supabase.js) — replace it with your own project's URL if you're running against a different backend.
 
 ### 3. Set up the database
 
@@ -104,11 +103,9 @@ npm run format     # format with Prettier
 
 Ideas for taking this further:
 
-- [ ] Use the current origin (`window.location.origin`) instead of a hardcoded `localhost` URL for the password-reset redirect, so it works in production
 - [ ] Search links by name, and filter by category (not just favorites)
 - [ ] Cover `useAuth` and the Pinia stores with unit tests (Vitest)
 - [ ] Add a GitHub Actions workflow to run lint/build on every PR
-- [ ] React to `supabase.auth.onAuthStateChange` instead of re-checking the session on every navigation, so login state stays in sync across tabs
 - [ ] Dark mode toggle (PrimeVue + Tailwind already support it)
 - [ ] Migrate to TypeScript
 
