@@ -105,7 +105,6 @@ Ideas for taking this further:
 
 - [ ] Search links by name, and filter by category (not just favorites)
 - [ ] Cover `useAuth` and the Pinia stores with unit tests (Vitest)
-- [ ] Add a GitHub Actions workflow to run lint/build on every PR
 - [ ] Dark mode toggle (PrimeVue + Tailwind already support it)
 - [ ] Migrate to TypeScript
 
