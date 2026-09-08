@@ -12,7 +12,9 @@
     "preview": "vite preview",
     "lint": "eslint . --fix --cache",
     "lint:ci": "eslint .",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "test": "vitest",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "@primeuix/themes": "^2.0.1",
@@ -37,6 +39,7 @@
     "globals": "^16.5.0",
     "prettier": "3.6.2",
     "vite": "^7.2.4",
-    "vite-plugin-vue-devtools": "^8.0.5"
+    "vite-plugin-vue-devtools": "^8.0.5",
+    "vitest": "^5.0.0"
   }
 }
