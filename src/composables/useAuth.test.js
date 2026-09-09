@@ -6,6 +6,7 @@ vi.mock('@/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: vi.fn(),
+      signOut: vi.fn(),
     },
   },
 }))
@@ -47,4 +48,30 @@ describe('useAuth - signIn', () => {
   })
 })
 
+describe('useAuth - signOut', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
+  it('возвращает пустоту', async () => {
+    supabase.auth.signOut.mockResolvedValue({ error: null })
+
+    const { signOut } = useAuth()
+    const result = await signOut()
+
+    expect(result).toBeUndefined()
+    expect(supabase.auth.signOut).toHaveBeenCalled()
+  })
+
+  it('бросает ошибку', async () => {
+    // Supabase-клиент никогда не бросает исключение сам, он возвращает { data, error }
+    // Мок должен повторять форму реального ответа.
+    supabase.auth.signOut.mockResolvedValue({
+      error: new Error('Exit Error'),
+    })
+
+    const { signOut, errorMessage } = useAuth()
+    await expect(signOut()).rejects.toThrow('Exit Error')
+    expect(errorMessage.value).toBe('Exit Error')
+  })
+})
