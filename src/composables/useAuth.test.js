@@ -1,3 +1,9 @@
+// По умолчанию Vitest гоняет тесты в Node-окружении, где нет window —
+// resetPassword обращается к window.location.origin, а значит без этой
+// директивы тест упадёт с ReferenceError. jsdom эмулирует браузерный DOM,
+// включая window, только для этого файла (глобально не включаем, чтобы
+// не замедлять остальные тесты, которым DOM не нужен).
+// @vitest-environment jsdom
 import { useAuth } from './useAuth'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { supabase } from '@/supabase'
@@ -15,7 +21,7 @@ vi.mock('@/supabase', () => ({
       signUp: vi.fn(),
       signOut: vi.fn(),
       updateUser: vi.fn(),
-      resetPasswordForEmail: vi.fn()
+      resetPasswordForEmail: vi.fn(),
     },
 
     from: vi.fn(() => ({
@@ -143,7 +149,7 @@ describe('useAuth - updatePassword', () => {
     const result = await updatePassword('testpassword')
 
     expect(result).toEqual(fakeData)
-    expect(supabase.auth.updateUser).toHaveBeenCalledWith({password: 'testpassword'})
+    expect(supabase.auth.updateUser).toHaveBeenCalledWith({ password: 'testpassword' })
   })
 
   it('бросает ошибку при неверных данных', async () => {
@@ -158,3 +164,29 @@ describe('useAuth - updatePassword', () => {
   })
 })
 
+describe('useAuth - resetPassword', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('возвращает данные при успешном сбросе пароля', async () => {
+    supabase.auth.resetPasswordForEmail.mockResolvedValue({ error: null })
+
+    const { resetPassword } = useAuth()
+    await resetPassword('a@a.com')
+    expect(supabase.auth.resetPasswordForEmail).toHaveBeenCalledWith('a@a.com', {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+  })
+
+  it('бросает ошибку при неверных данных', async () => {
+    supabase.auth.resetPasswordForEmail.mockResolvedValue({
+      error: new Error('Invalid email'),
+    })
+
+    const { resetPassword, errorMessage } = useAuth()
+
+    await expect(resetPassword('a@a.com')).rejects.toThrow('Invalid email')
+    expect(errorMessage.value).toBe('Invalid email')
+  })
+})
