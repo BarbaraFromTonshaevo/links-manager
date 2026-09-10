@@ -190,3 +190,8 @@ describe('useAuth - resetPassword', () => {
     expect(errorMessage.value).toBe('Invalid email')
   })
 })
+
+// signInWithGithub намеренно не покрыт тестом — структурно идентичен
+// signIn (тот же паттерн call → { data, error }), не добавляет новой
+// ветвящейся логики, которую стоило бы проверять отдельно.
+it.todo('signInWithGithub — аналогичен signIn, доп. логики для проверки нет')
