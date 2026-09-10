@@ -14,6 +14,8 @@ vi.mock('@/supabase', () => ({
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
       signOut: vi.fn(),
+      updateUser: vi.fn(),
+      resetPasswordForEmail: vi.fn()
     },
 
     from: vi.fn(() => ({
@@ -127,3 +129,32 @@ describe('useAuth - signUp', () => {
     expect(errorMessage.value).toBe('Invalid credentials')
   })
 })
+
+describe('useAuth - updatePassword', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('возвращает данные при успешной смене пароля', async () => {
+    const fakeData = { user: { id: '123' } }
+    supabase.auth.updateUser.mockResolvedValue({ data: fakeData, error: null })
+
+    const { updatePassword } = useAuth()
+    const result = await updatePassword('testpassword')
+
+    expect(result).toEqual(fakeData)
+    expect(supabase.auth.updateUser).toHaveBeenCalledWith({password: 'testpassword'})
+  })
+
+  it('бросает ошибку при неверных данных', async () => {
+    supabase.auth.updateUser.mockResolvedValue({
+      error: new Error('Invalid password'),
+    })
+
+    const { updatePassword, errorMessage } = useAuth()
+
+    await expect(updatePassword('testpassword')).rejects.toThrow('Invalid password')
+    expect(errorMessage.value).toBe('Invalid password')
+  })
+})
+
