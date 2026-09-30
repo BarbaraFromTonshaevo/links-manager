@@ -1,7 +1,6 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { useLinksStore } from './linksStore'
-import { supabase } from '@/supabase'
 
 let mockResult = { error: null}
 
