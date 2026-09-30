@@ -52,8 +52,6 @@ describe('linksStore - removeLink', () => {
 describe('linksStore - changeIsFavorite', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // новый Pinia-инстанс на каждый тест,
-    // иначе стор из одного теста "утечёт" в следующий
     setActivePinia(createPinia())
     mockResult = { error: null } // сброс перед каждым тестом
   })
@@ -89,5 +87,37 @@ describe('linksStore - changeIsFavorite', () => {
     mockResult = { error: new Error('changeIsFavorite failed') }
     await expect(store.changeIsFavorite(1)).rejects.toThrow('changeIsFavorite failed')
     expect(store.links).toEqual([{ id: 1, name: 'Google', is_favorite: false }]) // список не тронут
+  })
+})
+
+describe('linksStore - addClickCount', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    setActivePinia(createPinia())
+    mockResult = { error: null } // сброс перед каждым тестом
+  })
+
+  it('проверка изменения click_count', async () => {
+    const store = useLinksStore()
+    store.links = [{ id: 1, name: 'Google', click_count: 0 }]
+    await store.addClickCount(1)
+    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 1 }])
+    expect(mockQuery.eq).toHaveBeenCalledWith('id', 1)
+    expect(mockQuery.update).toHaveBeenCalledWith({'click_count': 1})
+  })
+
+  it('проверка отсутствие изменений если указан несуществующий id', async () => {
+    const store = useLinksStore()
+    store.links = [{ id: 1, name: 'Google', click_count: 0 }]
+    await store.addClickCount(2)
+    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 0 }])
+  })
+
+  it('бросает ошибку и не меняет список при ошибке', async () => {
+    const store = useLinksStore()
+    store.links = [{ id: 1, name: 'Google', click_count: 0 }]
+    mockResult = { error: new Error('addClickCount failed') }
+    await expect(store.addClickCount(1)).rejects.toThrow('addClickCount failed')
+    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 0 }]) // список не тронут
   })
 })
