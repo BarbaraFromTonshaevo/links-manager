@@ -137,7 +137,6 @@ Deployed on Vercel as a static Vite build; the Supabase variables are set in the
 
 ## Known limitations
 
-- **No SPA fallback on Vercel.** Opening `/auth` or `/reset-password` directly returns 404, and that includes the link from the password reset email.
 - **The click counter is not atomic.** The client reads `click_count` and writes back `+1`, so clicks from two tabs at once can be lost.
 - **Loading errors are silent.** `fetchLinks` only logs errors to the console, and it reads `data.length` before checking `error`.
 - **The auth subscription is never unsubscribed** (a TODO in `userStore`); during HMR this can leave duplicate subscriptions.
