@@ -23,7 +23,7 @@
 - **Одна обёртка для состояния запросов.** [composables/useRequest.js](src/composables/useRequest.js) ведёт `loading` и текст ошибки для любого асинхронного вызова; через неё идут все методы `useAuth`.
 - **Пагинация и сортировка на стороне базы.** Стор ссылок использует range-запросы Supabase с `count: 'exact'` и сортирует по `click_count` или `created_at`, так что за раз грузится одна страница из 6 ссылок.
 - **Доступ к данным через Row Level Security.** Anon-ключ лежит во фронтенде, а каждая таблица защищена RLS-политиками, чтобы пользователь видел только свои данные.
-- **Тесты и CI.** Vitest покрывает `useRequest`, `useAuth` и `userStore` с замоканным клиентом Supabase; GitHub Actions запускает линтер, тесты и сборку на каждый push и pull request в `main`.
+- **Тесты и CI.** Vitest покрывает `useRequest`, `useAuth`, `userStore` и `linksStore` с замоканным клиентом Supabase; GitHub Actions запускает линтер, тесты и сборку на каждый push и pull request в `main`.
 
 ## Возможности
 
@@ -147,6 +147,6 @@ npm run test:ci      # Vitest, один прогон
 
 - **Поиск по названию и фильтр по категории**, а не только по избранному.
 - **Атомарный счётчик кликов** через функцию Postgres, вызываемую через `rpc`.
-- **Тесты для `linksStore` и компонентов**; `useAuth`, `useRequest` и `userStore` уже покрыты.
+- **Тесты для компонентов**; `useAuth`, `useRequest`, `userStore` и `linksStore` уже покрыты.
 - **Тёмная тема**: PrimeVue и Tailwind её уже поддерживают.
 - **TypeScript.**
