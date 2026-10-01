@@ -44,9 +44,9 @@ export const useLinksStore = defineStore('links', () => {
       }
 
       const { data, error, count } = await query
+      if (error) throw error
       totalLinks.value = count
       offset.value += data.length
-      if (error) throw error
       links.value.push(...data)
       hasMore.value = offset.value < totalLinks.value
     } catch (e) {
