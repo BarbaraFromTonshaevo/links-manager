@@ -23,7 +23,7 @@ Sign up with any email or use the GitHub button to sign in with OAuth.
 - **One wrapper for request state.** [composables/useRequest.js](src/composables/useRequest.js) handles `loading` and the error message for any async call; every method in `useAuth` goes through it.
 - **Pagination and sorting on the database side.** The links store uses Supabase range queries with `count: 'exact'` and orders by `click_count` or `created_at`, so only one page of 6 links is loaded at a time.
 - **Access control through Row Level Security.** The anon key lives in the frontend, and every table is protected by RLS policies so users only see their own data.
-- **Tests and CI.** Vitest covers `useRequest`, `useAuth` and `userStore` with a mocked Supabase client; GitHub Actions runs lint, tests and build on every push and pull request to `main`.
+- **Tests and CI.** Vitest covers `useRequest`, `useAuth`, `userStore` and `linksStore` with a mocked Supabase client; GitHub Actions runs lint, tests and build on every push and pull request to `main`.
 
 ## Features
 
@@ -147,6 +147,6 @@ Deployed on Vercel as a static Vite build; the Supabase variables are set in the
 
 - **Search by name and a category filter**, not only favorites.
 - **An atomic click counter** through a Postgres function called with `rpc`.
-- **Tests for `linksStore` and the components**; `useAuth`, `useRequest` and `userStore` are already covered.
+- **Tests for the components**; `useAuth`, `useRequest`, `userStore` and `linksStore` are already covered.
 - **Dark mode**: PrimeVue and Tailwind already support it.
 - **TypeScript.**
