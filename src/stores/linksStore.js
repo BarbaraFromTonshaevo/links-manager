@@ -12,9 +12,11 @@ export const useLinksStore = defineStore('links', () => {
   const totalLinks = ref(0)
   const hasMore = ref(true)
   const offset = ref(0)
+  const errorMessage = ref('')
 
   const fetchLinks = async (resetPage = false, resetFilters = false) => {
     isLoading.value = true
+    errorMessage.value = ''
 
     if (resetPage) {
       offset.value = 0
@@ -51,6 +53,7 @@ export const useLinksStore = defineStore('links', () => {
       hasMore.value = offset.value < totalLinks.value
     } catch (e) {
       console.error('Ошибка загрузки', e)
+      errorMessage.value = 'Не удалось загрузить ссылки. Попробуйте обновить страницу.'
     } finally {
       isLoading.value = false
     }
@@ -96,6 +99,7 @@ export const useLinksStore = defineStore('links', () => {
     sortByPopular,
     hasMore,
     offset,
+    errorMessage,
     fetchLinks,
     changeIsFavorite,
     removeLink,

@@ -212,7 +212,7 @@ describe('linksStore - fetchLinks', () => {
     expect(store.hasMore).toBe(true)
   })
 
-  it('бросает ошибку и не меняет список при ошибке', async () => {
+  it('меняет errorMessage и не меняет список при ошибке', async () => {
     const store = useLinksStore()
     const fakeLinks = [
       { id: 1, name: 'Google', url: 'https://google.com', click_count: 1, is_favorite: false },
@@ -227,11 +227,30 @@ describe('linksStore - fetchLinks', () => {
     mockResult = { error: new Error('fetchLinks failed') }
     const promise = store.fetchLinks()
     expect(store.isLoading).toBe(true)
+    expect(store.errorMessage).toBe('')
     await promise
+    expect(store.errorMessage).toBe('Не удалось загрузить ссылки. Попробуйте обновить страницу.')
 
-    expect(store.links).toEqual(fakeLinks) // список не тронут
+    // список не тронут
+    expect(store.links).toEqual(fakeLinks)
     expect(store.offset).toBe(2)
     expect(store.hasMore).toBe(true)
     expect(store.isLoading).toBe(false)
+  })
+
+  it('сбрасывает ошибку после успешной загрузки', async () => {
+    const store = useLinksStore()
+
+    // 1. Первая загрузка падает → ошибка записана
+    mockResult = { error: new Error('fetchLinks failed') }
+    await store.fetchLinks()
+    expect(store.errorMessage).toBe('Не удалось загрузить ссылки. Попробуйте обновить страницу.')
+
+    // 2. «Сеть вернулась»: мок теперь отвечает успешно
+    mockResult = { data: [{ id: 1 }], error: null, count: 1 }
+    await store.fetchLinks()
+
+    // 3. Ошибка должна исчезнуть
+    expect(store.errorMessage).toBe('')
   })
 })
