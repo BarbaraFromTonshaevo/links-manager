@@ -12,7 +12,7 @@ import { supabase } from '@/supabase'
 // в самый верх файла ещё до выполнения остального кода, и Vitest разрешает
 // ссылаться внутри фабрики только на переменные с этим префиксом. Иначе —
 // ошибка обращения к переменной до её инициализации (temporal dead zone).
-const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null })
+let mockInsert = vi.fn().mockResolvedValue({ data: null, error: null })
 
 vi.mock('@/supabase', () => ({
   supabase: {
@@ -98,6 +98,7 @@ describe('useAuth - signOut', () => {
 describe('useAuth - signUp', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockInsert = vi.fn().mockResolvedValue({ data: null, error: null })
   })
 
   it('возвращает данные при успешной регистрации', async () => {
@@ -133,6 +134,20 @@ describe('useAuth - signUp', () => {
       signUp({ email: 'a@a.com', password: 'wrong', firstname: 'test name' }),
     ).rejects.toThrow('Invalid credentials')
     expect(errorMessage.value).toBe('Invalid credentials')
+  })
+
+  it('бросает ошибку при неудаче выполнения insert в public.users ', async () => {
+    const fakeData = { user: { id: '123' } }
+    supabase.auth.signUp.mockResolvedValue({ data: fakeData, error: null })
+    mockInsert = vi.fn().mockResolvedValue({
+      data: null,
+      error: new Error('Failed at public.user insert'),
+    })
+    const { signUp, errorMessage } = useAuth()
+    await expect(
+      signUp({ email: 'a@a.com', password: 'wrong', firstname: 'test name' }),
+    ).rejects.toThrow('Failed at public.user insert')
+    expect(errorMessage.value).toBe('Failed at public.user insert')
   })
 })
 
