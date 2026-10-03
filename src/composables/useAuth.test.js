@@ -8,10 +8,6 @@ import { useAuth } from './useAuth'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { supabase } from '@/supabase'
 
-// Имя обязано начинаться с "mock" — vi.mock(...) поднимается (hoisting)
-// в самый верх файла ещё до выполнения остального кода, и Vitest разрешает
-// ссылаться внутри фабрики только на переменные с этим префиксом. Иначе —
-// ошибка обращения к переменной до её инициализации (temporal dead zone).
 let mockInsert = vi.fn().mockResolvedValue({ data: null, error: null })
 
 vi.mock('@/supabase', () => ({
@@ -145,7 +141,7 @@ describe('useAuth - signUp', () => {
     })
     const { signUp, errorMessage } = useAuth()
     await expect(
-      signUp({ email: 'a@a.com', password: 'wrong', firstname: 'test name' }),
+      signUp({ email: 'a@a.com', password: 'somepassword', firstname: 'test name' }),
     ).rejects.toThrow('Failed at public.user insert')
     expect(errorMessage.value).toBe('Failed at public.user insert')
   })
