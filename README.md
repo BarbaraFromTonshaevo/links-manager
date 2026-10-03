@@ -139,7 +139,7 @@ Deployed on Vercel as a static Vite build; the Supabase variables are set in the
 
 - **The click counter is not atomic.** The client reads `click_count` and writes back `+1`, so clicks from two tabs at once can be lost.
 - **The auth subscription is never unsubscribed** (a TODO in `userStore`); during HMR this can leave duplicate subscriptions.
-- **The `users` insert on sign-up is not checked for errors.**
+- **Sign-up is not atomic.** auth.signUp and the insert into public.users are two separate requests. If the insert fails, the user exists in auth.users without a row in public.users: the error is shown, but the user stays signed in and can't sign up again with the same email.
 
 ## What I'd improve
 
