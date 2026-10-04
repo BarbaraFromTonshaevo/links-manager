@@ -39,11 +39,13 @@ export const useUserStore = defineStore('auth', () => {
     return data
   }
 
-  // TODO: сейчас подписка на onAuthStateChange никогда не отписывается.
-  // В обычной работе это не проблема — стор живёт всё время сессии,
-  // но при HMR в dev-режиме (или в тестах) может плодить дублирующиеся
-  // подписки. Решение: onScopeDispose(() => subscription.unsubscribe())
-  // внутри setup-функции стора.
+  // Подписка на onAuthStateChange намеренно не снимается: setup стора
+  // выполняется один раз на страницу (один createPinia(), при правке файла
+  // Vite делает полную перезагрузку), и подписка живёт, пока открыта вкладка.
+  // Дубли появятся, только если setup выполнится повторно на той же странице —
+  // например, если добавить стору acceptHMRUpdate или завести несколько
+  // экземпляров Pinia (SSR). Тогда нужна отписка:
+  // onScopeDispose(() => subscription.unsubscribe()) внутри setup-функции.
   // eslint-disable-next-line no-unused-vars
   const authStateSubscription = getAuthState()
   //   console.log(authStateSubscription)
