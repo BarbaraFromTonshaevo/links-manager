@@ -137,13 +137,11 @@ Deployed on Vercel as a static Vite build; the Supabase variables are set in the
 
 ## Known limitations
 
-- **The click counter is not atomic.** The client reads `click_count` and writes back `+1`, so clicks from two tabs at once can be lost.
 - **Sign-up is not atomic.** `auth.signUp` and the insert into `public.users` are two separate requests. If the insert fails, the user exists in `auth.users` without a row in `public.users`: the error is shown, but the user stays signed in and can't sign up again with the same email.
 
 ## What I'd improve
 
 - **Search by name and a category filter**, not only favorites.
-- **An atomic click counter** through a Postgres function called with `rpc`.
 - **A database trigger for new users** that creates the `public.users` row on sign-up, so both writes happen in one transaction.
 - **Tests for the components**; `useAuth`, `useRequest`, `userStore` and `linksStore` are already covered.
 - **Dark mode**: PrimeVue and Tailwind already support it.
