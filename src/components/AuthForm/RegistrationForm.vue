@@ -20,7 +20,7 @@ const formData = ref({
 
 const rules = z.object({
   email: z.string().email({ message: 'Некорректный email' }),
-  password: z.string().min(5, { message: 'Должно быть минимум 6 символов' }),
+  password: z.string().min(6, { message: 'Должно быть минимум 6 символов' }),
   firstname: z.string().min(1, { message: 'Имя обязательно для заполнения' }),
 })
 
