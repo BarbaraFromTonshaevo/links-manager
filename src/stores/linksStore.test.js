@@ -1,6 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { useLinksStore } from './linksStore'
+import { supabase } from '@/supabase'
 
 let mockResult = { error: null }
 
@@ -18,6 +19,7 @@ const mockQuery = {
 vi.mock('@/supabase', () => ({
   supabase: {
     from: vi.fn(() => mockQuery), // supabase.from — это ровно тот же метод, что внутри mockQuery
+    rpc: vi.fn(),
   },
 }))
 
@@ -97,31 +99,40 @@ describe('linksStore - addClickCount', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     setActivePinia(createPinia())
-    mockResult = { error: null } // сброс перед каждым тестом
   })
 
-  it('проверка изменения click_count', async () => {
+  it('проверка изменения click_count с учетом актуальных данных', async () => {
     const store = useLinksStore()
-    store.links = [{ id: 1, name: 'Google', click_count: 0 }]
+    store.links = [{ id: 1, name: 'Google', click_count: 5 }]
+    supabase.rpc.mockResolvedValue({ data: 8, error: null })
     await store.addClickCount(1)
-    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 1 }])
-    expect(mockQuery.eq).toHaveBeenCalledWith('id', 1)
-    expect(mockQuery.update).toHaveBeenCalledWith({ click_count: 1 })
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_click_count', { link_id: 1 })
+    expect(mockQuery.update).not.toHaveBeenCalled()
+    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 8 }])
   })
 
   it('проверка отсутствие изменений если указан несуществующий id', async () => {
     const store = useLinksStore()
     store.links = [{ id: 1, name: 'Google', click_count: 0 }]
     await store.addClickCount(2)
+    expect(supabase.rpc).not.toHaveBeenCalled()
     expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 0 }])
   })
 
   it('бросает ошибку и не меняет список при ошибке', async () => {
     const store = useLinksStore()
     store.links = [{ id: 1, name: 'Google', click_count: 0 }]
-    mockResult = { error: new Error('addClickCount failed') }
+    supabase.rpc.mockResolvedValue({ data: null, error: new Error('addClickCount failed') })
     await expect(store.addClickCount(1)).rejects.toThrow('addClickCount failed')
     expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 0 }]) // список не тронут
+  })
+
+  it('проверка случая если возвращается click_count = null', async () => {
+    const store = useLinksStore()
+    store.links = [{ id: 1, name: 'Google', click_count: 5 }]
+    supabase.rpc.mockResolvedValue({ data: null, error: null })
+    await store.addClickCount(1)
+    expect(store.links).toEqual([{ id: 1, name: 'Google', click_count: 5 }])
   })
 })
 

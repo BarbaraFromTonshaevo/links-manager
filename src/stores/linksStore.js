@@ -82,13 +82,9 @@ export const useLinksStore = defineStore('links', () => {
   const addClickCount = async (id) => {
     const index = links.value.findIndex((link) => link.id === id)
     if (index !== -1) {
-      const newClickCount = links.value[index].click_count + 1
-      const { error } = await supabase
-        .from('links')
-        .update({ click_count: newClickCount })
-        .eq('id', id)
+      const { data, error } = await supabase.rpc('increment_click_count', { link_id: id })
       if (error) throw error
-      links.value[index].click_count = newClickCount
+      if (data !== null) links.value[index].click_count = data
     }
   }
 
