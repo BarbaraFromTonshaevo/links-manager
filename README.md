@@ -142,7 +142,6 @@ Deployed on Vercel as a static Vite build; the Supabase variables are set in the
 ## What I'd improve
 
 - **Search by name and a category filter**, not only favorites.
-- **An atomic click counter** through a Postgres function called with `rpc`.
 - **A database trigger for new users** that creates the `public.users` row on sign-up, so both writes happen in one transaction.
 - **Tests for the components**; `useAuth`, `useRequest`, `userStore` and `linksStore` are already covered.
 - **Dark mode**: PrimeVue and Tailwind already support it.
